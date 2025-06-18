@@ -57,11 +57,9 @@ def entrenar_modelos_hmm(archivos_dict, seg_duration=0.05, hop_duration=0.025):
     modelos = {}
     for fonema, lista_archivos in archivos_dict.items():
         print(f"Entrenando HMM para fonema: {fonema}")
-        # Extraer características de todos los audios de este fonema
         features = Dataset(lista_archivos, seg_duration, hop_duration)
 
         if len(features) > 0:
-            # Entrenar un modelo HMM de tipo GaussianHMM
             modelo = hmm.GaussianHMM(n_components=3, covariance_type='diag', n_iter=100)
             modelo.fit(features)
             modelos[fonema] = modelo
@@ -75,10 +73,10 @@ def clasificar_audio(modelos, archivo, seg_duration=0.05, hop_duration=0.025):
     scores = {}
     for fonema, modelo in modelos.items():
         try:
-            score = modelo.score(features)  # log-likelihood
+            score = modelo.score(features)  
             scores[fonema] = score
         except:
-            scores[fonema] = float('-inf')  # por si falla el modelo
+            scores[fonema] = float('-inf')  
     predicho = max(scores, key=scores.get)
     return predicho, scores
 
